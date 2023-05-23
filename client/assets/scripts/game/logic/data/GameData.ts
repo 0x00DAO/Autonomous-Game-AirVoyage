@@ -36,7 +36,7 @@ export class GameData extends DataModelBase {
     }
 
     public get minGameFeePerRound(): any {
-        return ethers.utils.parseEther(`${this.stakeToken * 2}`);
+        return ethers.utils.parseEther(`${this.stakeToken * 4}`);
     }
 
     public get gameMap(): GameMap {
@@ -70,15 +70,13 @@ export class GameData extends DataModelBase {
         try {
             const data = await contractData.airVoyageGameViewSystemContract.getGame(gameID);
             game = GameDTO.fillWith(data);
-            if (this._currentGame) {
-                this._currentGame.destroyAllAirplanes();
-            }
+            this.gameMap.clearAllPlanes();
             game.initAllAirplanes();
             this._currentGame = game;
         } catch (error) {
             console.error(error);
         }
-        Toast.closeLoading();
+        await Toast.closeLoading();
         return game;
     }
 
@@ -134,17 +132,14 @@ export class GameData extends DataModelBase {
 
     @OnEvent(GameEventContractAirVoyageGameFinished.eventAsync)
     private async onGameFinished(gameId: any, winner: string) {
-        if (this.currentGame) {
-            this.currentGame.landedAllAirplanes();
-        }
-        this.endGame();
+        await this._gameMap?.clear();
+
         const message =
             winner === gameAccountData.address
                 ? 'You Win, now you can claim your Bonus!'
                 : `${winner} win!`;
-        Toast.showMessage(message);
 
-        return Promise.resolve();
+        Toast.showMessage(message);
     }
 }
 export const gameData: Readonly<GameData> = GameData.getInstance();

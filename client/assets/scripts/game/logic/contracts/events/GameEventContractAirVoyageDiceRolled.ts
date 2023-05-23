@@ -13,12 +13,12 @@ export class GameEventContractAirVoyageDiceRolled extends GameEventBaseDTO {
         console.log(this.subject, gameId, player, dice);
 
         if (
-            !gameData.currentGameId.eq(GameData.INVALID_GAME_ID) &&
+            gameData.currentGameId.eq(GameData.INVALID_GAME_ID) ||
             !gameData.currentGameId.eq(gameId)
         ) {
             return Promise.reject();
         }
-        Toast.closeLoading();
+        await Toast.closeLoading();
         await gameData.getGame(gameId);
     }
 }

@@ -11,6 +11,7 @@ import { gameData } from '../../data/GameData';
 import { Prefabs } from '../../enum/Prefabs';
 import { GameEventGameOpened } from '../../events/GameEventGameOpened';
 import { AirPlane } from '../AirPlane/AirPlane';
+import { AirPort } from '../AirPort/AirPort';
 import { Toast } from '../Toast/Toast';
 const { menu, ccclass, property } = _decorator;
 
@@ -34,18 +35,22 @@ export class GameMap extends GameObject {
         // this.scheduleOnce(() => this.testPlane(), 2);
     }
 
+    public clearAllPlanes() {
+        this.sky.removeAllChildren();
+        AirPort.clearAllAirports();
+    }
+
     public async clear() {
-        const gameId = gameData.currentGameId;
+        this.clearAllPlanes();
+
+        const game = gameData.currentGame;
+        if (game) {
+            const players = game!.playersInGame;
+            players.forEach((player) => player.landAllPlanes());
+        }
         gameData.endGame();
 
-        this.sky.removeAllChildren();
-
-        const game = await gameData.getGame(gameId);
-        if (!game) {
-            return Promise.resolve();
-        }
-        const players = game.playersInGame;
-        players.forEach((player) => player.landAllPlanes());
+        return Promise.resolve();
     }
 
     @OnEvent(GameEventGameOpened.eventAsync)

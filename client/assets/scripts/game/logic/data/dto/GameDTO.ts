@@ -40,6 +40,10 @@ export class GameDTO extends BaseDTO {
         );
     }
 
+    public get validPieces(): PieceDTO[] {
+        return this.pieces.filter((piece: PieceDTO) => piece.isValid);
+    }
+
     public getPlayerByAddress(address: string): PlayerDTO | null {
         return this.players.find((player: PlayerDTO) => player.addr === address) ?? null;
     }
@@ -58,10 +62,10 @@ export class GameDTO extends BaseDTO {
     }
 
     public initAllAirplanes() {
-        this.pieces.forEach((piece: PieceDTO) => piece.gotoInitPosition());
+        this.validPieces.forEach((piece: PieceDTO) => piece.gotoInitPosition());
     }
 
     public landedAllAirplanes() {
-        this.pieces.forEach((piece: PieceDTO) => piece.landToAirport());
+        this.validPieces.forEach((piece: PieceDTO) => piece.landToAirport());
     }
 }

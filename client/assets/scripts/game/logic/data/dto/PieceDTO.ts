@@ -17,6 +17,10 @@ export class PieceDTO extends BaseDTO {
         return this._airplane;
     }
 
+    public get isValid(): boolean {
+        return this.player !== '0x0000000000000000000000000000000000000000';
+    }
+
     public get isInAirPort(): boolean {
         return this.status === PieceStatus.Idle && this.localPosition === 0;
     }

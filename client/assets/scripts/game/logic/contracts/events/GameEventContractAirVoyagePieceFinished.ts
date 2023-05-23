@@ -11,7 +11,7 @@ export class GameEventContractAirVoyagePieceFinished extends GameEventBaseDTO {
     public async exec(gameId: any, player: any, pieceIndex: any) {
         console.log(this.subject, gameId, player, pieceIndex);
         if (
-            !gameData.currentGameId.eq(GameData.INVALID_GAME_ID) &&
+            gameData.currentGameId.eq(GameData.INVALID_GAME_ID) ||
             !gameData.currentGameId.eq(gameId)
         ) {
             return Promise.reject();

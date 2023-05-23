@@ -15,7 +15,7 @@ export class GameEventContractAirVoyageGameJoined extends GameEventBaseDTO {
             await gameData.startGame(player.gameId);
         } else {
             if (
-                !gameData.currentGameId.eq(GameData.INVALID_GAME_ID) &&
+                gameData.currentGameId.eq(GameData.INVALID_GAME_ID) ||
                 !gameData.currentGameId.eq(gameId)
             ) {
                 return Promise.reject();

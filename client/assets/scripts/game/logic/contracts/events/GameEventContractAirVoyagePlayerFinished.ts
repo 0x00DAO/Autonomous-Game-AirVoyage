@@ -8,15 +8,15 @@ export class GameEventContractAirVoyagePlayerFinished extends GameEventBaseDTO {
         return GameEventContractAirVoyagePlayerFinished.event;
     }
 
-    public async exec(gameId: any, player: any, dice: any) {
-        console.log(this.subject, gameId, player, dice);
+    public async exec(gameId: any, player: any) {
+        console.log(this.subject, gameId, player);
         if (
-            !gameData.currentGameId.eq(GameData.INVALID_GAME_ID) &&
+            gameData.currentGameId.eq(GameData.INVALID_GAME_ID) ||
             !gameData.currentGameId.eq(gameId)
         ) {
             return Promise.reject();
         }
 
-        const game = await gameData.getGame(gameId);
+        await gameData.getGame(gameId);
     }
 }

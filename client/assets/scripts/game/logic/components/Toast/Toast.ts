@@ -8,6 +8,7 @@ const { menu, ccclass, property } = _decorator;
 @menu('game/logic/components/Toast')
 export class Toast extends LayoutCom {
     private static _loading: Toast | null = null;
+    private static _queue: string[] = [];
 
     @property(Label)
     private tipLabel: Label = null!;
@@ -41,15 +42,23 @@ export class Toast extends LayoutCom {
     public fadeIn() {
         const opacity = this.node.getComponent(UIOpacity);
         tween(opacity)
-            .to(0.3, { opacity: 255 }, { easing: 'backIn' })
-            .delay(3)
-            .to(0.3, { opacity: 0 }, { easing: 'backOut' })
-            .call(() => this.close())
+            .to(0.15, { opacity: 255 }, { easing: 'backIn' })
+            .delay(2)
+            .to(0.15, { opacity: 0 }, { easing: 'backOut' })
+            .call(async () => {
+                this.close();
+                if (Toast._queue.length > 0) {
+                    const txt = Toast._queue.shift();
+                    await Toast.showMessage(txt!);
+                }
+                return Promise.resolve();
+            })
             .start();
     }
 
     static async showMessage(txt: string, isModelView: boolean = false): Promise<Toast | null> {
         if (Toast._isShowing) {
+            this._queue.push(txt);
             return null;
         }
         Toast._isShowing = true;
@@ -71,12 +80,17 @@ export class Toast extends LayoutCom {
         }
     }
 
-    static closeLoading() {
+    static async closeLoading() {
         if (!this._loading) {
             return Promise.resolve();
         }
         this._loading.close();
         this._loading = null;
+        if (this._queue.length > 0) {
+            const txt = this._queue.shift();
+            await Toast.showMessage(txt!);
+        }
+        return Promise.resolve();
     }
 
     public close() {

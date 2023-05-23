@@ -61,7 +61,7 @@ export class GameRoll extends GameObject {
     async load() {
         this.rollButtonStatus = GamePlayerStatus.Idle;
         this.stepTxtLabel.string = '';
-        this.scheduleOnce(async () => await this.onBalanceRefreshed(), 0);
+        this.scheduleOnce(async () => await this.onBalanceRefreshed(), 1);
         this.schedule(() => (this._clickable = true), 2);
     }
 
@@ -123,7 +123,7 @@ export class GameRoll extends GameObject {
         }
 
         try {
-            if (GameData.INVALID_GAME_ID.eq(player.gameId)) {
+            if (GameData.INVALID_GAME_ID.eq(player.gameId) || !player.gameId) {
                 // there's no game that current player joined, find or create a new one
                 const deposit = await this.deposit();
                 if (!deposit) {
@@ -199,11 +199,25 @@ export class GameRoll extends GameObject {
             await gameData.rollDice();
         } catch (e: any) {
             this.step = 0;
-            Toast.closeLoading();
+            await Toast.closeLoading();
             if (e && JSON.stringify(e).indexOf('execution reverted') > 0) {
                 GasRecharge.showPopUp();
             }
         }
+
+        // this.scheduleOnce(() => {
+        //     gameEventListenerManager.addEventToQueue(
+        //         GameEventContractAirVoyagePlayerFinished.event,
+        //         [gameData.currentGame!.gameId, gameAccountData.address]
+        //     );
+        // }, 2);
+
+        // this.scheduleOnce(() => {
+        //     gameEventListenerManager.addEventToQueue(GameEventContractAirVoyageGameFinished.event, [
+        //         gameData.currentGame!.gameId,
+        //         '0xasdjkasd82388',
+        //     ]);
+        // }, 2.5);
     }
 
     @OnEvent(GameEventRechargeBalance.event)
@@ -273,7 +287,7 @@ export class GameRoll extends GameObject {
     }
 
     @OnEvent(GameEventContractAirVoyageGameFinished.eventAsync)
-    private async onGameFinished() {
+    private async onGameFinished(gameId: any, winner: string) {
         this.step = 0;
         this.rollButtonStatus = GamePlayerStatus.Idle;
     }
