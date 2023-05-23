@@ -60,7 +60,7 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "2023-5-23 15:10:54 build success in 60694 ms!",
+        "message": "2023-5-23 15:41:05 build success in 42517 ms!",
         "options": {
           "name": "airvoyage",
           "platform": "web-mobile",
@@ -92,7 +92,7 @@
           "__version__": "1.3.5",
           "web-mobile": []
         },
-        "time": "5-23-2023 15:09",
+        "time": "5-23-2023 15:40",
         "dirty": false
       }
     }
