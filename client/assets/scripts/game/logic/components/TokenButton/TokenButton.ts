@@ -12,6 +12,7 @@ const { menu, ccclass } = _decorator;
 export class TokenButton extends GameObject {
     @AutoLockedAsync
     private async onCoinButtonClicked() {
+        console.log('gameAccountData.address', gameAccountData.address);
         if (StringUtil.isEmpty(gameAccountData.address)) {
             Toast.showMessage('Please connect wallet');
             return Promise.resolve();

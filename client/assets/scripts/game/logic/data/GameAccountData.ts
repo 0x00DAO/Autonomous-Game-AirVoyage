@@ -97,7 +97,7 @@ export class GameAccountData extends DataModelBase {
         if (amount.lte(ethers.utils.parseEther('0'))) {
             return Promise.reject();
         }
-        await contractData.airVoyageGameViewSystemContract.winBonus(this.address, amount);
+        await contractData.airVoyageGameViewSystemContract.rewardBonus();
         return amount;
     }
 }
